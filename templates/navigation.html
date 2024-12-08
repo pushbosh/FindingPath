@@ -8,17 +8,21 @@
         .info-card {
             background-color: #f9f9f9;
             border: 1px solid #ccc;
-            border-radius: 8px;
+            border-radius: 0; /* Убираем скругление для квадратной формы */
             padding: 20px;
-            margin: 20px;
+            margin: 20px auto; /* Центрируем инфоблок */
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
+            width: 90%; /* Изменяем ширину на 90% для адаптивности */
+            max-width: 300px; /* Задаем максимальную ширину */
+            height: auto; /* Изменяем высоту на автоматическую для адаптивности */
         }
         .info-card h2 {
             color: #333;
         }
         .info-card p {
             color: #666;
+            word-wrap: break-word; /* Позволяем перенос слов */
         }
         .button {
             background-color: #4CAF50;
@@ -33,11 +37,32 @@
         .button:hover {
             background-color: #45a049;
         }
+        .button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 16px;
+            display: inline-block; /* Добавлено для выравнивания кнопки */
+            text-align: center; /* Центрируем текст внутри кнопки */
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        .info-card p {
+            color: #333; /* Изменено на черный цвет для текста */
+        }
+        p{
+            font-size: 20px;
+        }
     </style>
     <div class="info-card">
-        <h2>Инфоблок</h2>
-        <p>Здесь инфа про сайт</p>
-        <a href="/find" class="button">Перейти на главную страницу</a>
+        <h2>Добро пожаловать!   </h2>
+        <p>Этот сайт создан для демонстрации алгоритма A* для поиска пути. Вы можете задавать начальную и конечную точки, добавлять препятствия, а алгоритм найдет оптимальный маршрут.</p>
+        <a href="/find" class="button">Перейти на демонстрацию</a>
     </div>
     <title>Info Page</title>
 </head>

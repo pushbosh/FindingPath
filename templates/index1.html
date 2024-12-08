@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" href="https://play-lh.googleusercontent.com/3r-YZM6C9QVF4ra7IVlVTi4ijfC3d7Ta9ya6ZdNyNbGkFYcQltXq_V6vxD3W-twVMw">
+    <link rel="icon"  type="image/x-icon" href="https://play-lh.googleusercontent.com/3r-YZM6C9QVF4ra7IVlVTi4ijfC3d7Ta9ya6ZdNyNbGkFYcQltXq_V6vxD3W-twVMw">
     <title>Поиск пути</title>
 </head>
 <body>
@@ -37,9 +37,6 @@
         .path {
             background-color: #2196F3;
         }
-        .obstacle {
-            background-color: #800080;
-        }
         .controls {
             margin: 20px 0;
         }
@@ -53,18 +50,14 @@
             border: none;
             border-radius: 4px;
         }
-        button.active {
-            background-color: #800080;
+        button:hover {
+            background-color: #45a049;
         }
-        .button {
-            background-color: #4CAF50;
+        .button:hover {
             color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            text-decoration: none;
-            font-size: 16px;
+        }
+        a.button{
+            color: white;
         }
     </style>
 
@@ -72,10 +65,9 @@
         <h1>Поиск пути алгоритмом A*</h1>
         <div class="controls">
             <button onclick="clearGrid()">Очистить</button>
-            <button onclick="toggleAddObstacles()" id="obstacle-button">Добавить препятствия</button>
             <button onclick="findPath()">Найти путь</button>
             <button>
-                <a href="./" class="button" style="text-decoration: none;">Вернуться на главную страницу</a>
+                <a href="/" class="button" style="text-decoration: none;">Вернуться на главную страницу</a>
             </button>
         </div>
         <div id="grid" class="grid"></div>
@@ -85,15 +77,13 @@
         const gridSize = 20;
         let startPos = null;
         let goalPos = null;
-        let addObstaclesMode = false;
-        const obstacles = new Set();
-
+        
         function createGrid() {
             const grid = document.getElementById('grid');
             grid.style.gridTemplateColumns = `repeat(${gridSize}, 30px)`;
             
-            for (let y = 0; y < gridSize; y++) {
-                for (let x = 0; x < gridSize; x++) {
+            for(let y = 0; y < gridSize; y++) {
+                for(let x = 0; x < gridSize; x++) {
                     const cell = document.createElement('div');
                     cell.className = 'cell';
                     cell.dataset.x = x;
@@ -104,49 +94,27 @@
             }
         }
 
-        function toggleAddObstacles() {
-            addObstaclesMode = !addObstaclesMode;
-            const button = document.getElementById('obstacle-button');
-            if (addObstaclesMode) {
-                button.classList.add('active');
-                button.textContent = 'Режим препятствий включен';
-            } else {
-                button.classList.remove('active');
-                button.textContent = 'Добавить препятствия';
-            }
-        }
-
         function handleCellClick(e) {
             const cell = e.target;
             const x = parseInt(cell.dataset.x);
             const y = parseInt(cell.dataset.y);
-            const key = `${x},${y}`;
 
-            if (addObstaclesMode) {
-                if (!obstacles.has(key)) {
-                    obstacles.add(key);
-                    cell.classList.add('obstacle');
-                } else {
-                    obstacles.delete(key);
-                    cell.classList.remove('obstacle');
-                }
-            } else {
-                if (!startPos) {
-                    startPos = { x, y };
-                    cell.classList.add('start');
-                } else if (!goalPos) {
-                    goalPos = { x, y };
-                    cell.classList.add('goal');
-                }
+            if (!startPos) {
+                startPos = {x, y};
+                cell.classList.add('start');
+            } else if (!goalPos) {
+                goalPos = {x, y};
+                cell.classList.add('goal');
             }
         }
 
         function clearGrid() {
-            const cells = document.querySelectorAll('.cell');
-            cells.forEach(cell => cell.className = 'cell');
+            const cells = document.getElementsByClassName('cell');
+            Array.from(cells).forEach(cell => {
+                cell.className = 'cell';
+            });
             startPos = null;
             goalPos = null;
-            obstacles.clear();
         }
 
         async function findPath() {
@@ -163,31 +131,29 @@
                 body: JSON.stringify({
                     start: startPos,
                     goal: goalPos,
-                    gridSize: gridSize,
-                    obstacles: Array.from(obstacles, (key) => key.split(',').map(Number)), // Преобразование в массив
-                }),
+                    gridSize: gridSize
+                })
             });
 
             const data = await response.json();
-
+            
             if (data.path) {
                 animatePath(data.path);
-            } else {
-                alert('Путь не найден!');
             }
         }
 
-
         function animatePath(path) {
             let i = 0;
-            const interval = setInterval(() => {
+            const intervalId = setInterval(() => {
                 if (i >= path.length) {
-                    clearInterval(interval);
+                    clearInterval(intervalId);
                     return;
                 }
                 const [x, y] = path[i];
-                if ((x !== startPos.x || y !== startPos.y) && (x !== goalPos.x || y !== goalPos.y)) {
-                    document.querySelector(`[data-x="${x}"][data-y="${y}"]`).classList.add('path');
+                if ((x !== startPos.x || y !== startPos.y) && 
+                    (x !== goalPos.x || y !== goalPos.y)) {
+                    const cell = document.querySelector(`[data-x="${x}"][data-y="${y}"]`);
+                    cell.classList.add('path');
                 }
                 i++;
             }, 100);
